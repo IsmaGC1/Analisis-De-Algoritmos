@@ -5,9 +5,7 @@ import time
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-# ========================
-# Algoritmos de ordenamiento (generadores con yield)
-# ========================
+# Algoritmos de ordenamiento
 
 def bubble_sort(arr):
     n = len(arr)
@@ -77,9 +75,7 @@ def partition(arr, low, high):
     yield arr, [i + 1], i + 1  # Devuelve índice del pivote al final
 
 
-# ========================
 # Clase principal del visualizador
-# ========================
 
 class SortingVisualizer:
     def __init__(self, root):
@@ -107,11 +103,11 @@ class SortingVisualizer:
         self.size = tk.IntVar(value=30)
         self.current_algorithm = tk.StringVar(value="Bubble Sort")
         self.sorted_indices = []
+        self.pause = False
         self.generator = None
         self.sorting = False
-        self.times = {}
+        self.times = {alg: [] for alg in self.algorithms}
 
-        # ================= GUI =================
 
         control_frame = ttk.Frame(root, padding=10)
         control_frame.pack(fill=tk.X)
@@ -124,12 +120,23 @@ class SortingVisualizer:
         self.size_entry = ttk.Entry(control_frame, textvariable=self.size, width=5)
         self.size_entry.grid(row=0, column=3, padx=4)
 
-        ttk.Button(control_frame, text="Aplicar N", command=self.apply_n).grid(row=0, column=4, padx=4)
-        ttk.Button(control_frame, text="Generar", command=self.generate).grid(row=0, column=5, padx=4)
-        ttk.Button(control_frame, text="Ordenar", command=self.start_sort).grid(row=0, column=6, padx=4)
-        ttk.Button(control_frame, text="Mezclar", command=self.shuffle).grid(row=0, column=7, padx=4)
-        ttk.Button(control_frame, text="Limpiar", command=self.clear_highlights).grid(row=0, column=8, padx=4)
-        ttk.Button(control_frame, text="Ver gráfica de tiempos", command=self.show_graph).grid(row=0, column=9, padx=4)
+        self.btnGenerar = ttk.Button(control_frame, text="Generar", command=self.generate)
+        self.btnGenerar.grid(row=0, column=4, padx=4)
+
+        self.btnOrdenar = ttk.Button(control_frame, text="Ordenar", command=self.start_sort)
+        self.btnOrdenar.grid(row=0, column=5, padx=4)
+
+        self.btnPausar = ttk.Button(control_frame, text="Pausar/Despausar", command=self.alternar_pausa)
+        self.btnPausar.grid(row=0, column=6, padx=4)
+
+        self.btnMezclar = ttk.Button(control_frame, text="Mezclar", command=self.shuffle)
+        self.btnMezclar.grid(row=0, column=7, padx=4)
+
+        self.btnLimpiar = ttk.Button(control_frame, text="Limpiar", command=self.clear_highlights)
+        self.btnLimpiar.grid(row=0, column=8, padx=4)
+
+        self.btnVerGrafica = ttk.Button(control_frame, text="Ver gráfica de tiempos", command=self.show_graph)
+        self.btnVerGrafica.grid(row=0, column=9, padx=4)
 
         ttk.Label(control_frame, text="Velocidad (ms):").grid(row=1, column=0, sticky=tk.W, padx=4)
         self.speed_scale = ttk.Scale(control_frame, from_=0, to=200, orient=tk.HORIZONTAL, variable=self.speed)
@@ -141,20 +148,6 @@ class SortingVisualizer:
 
         self.canvas = tk.Canvas(root, width=900, height=450, bg="white")
         self.canvas.pack(pady=10)
-
-        self.generate()
-
-    # ================= Lógica =================
-
-    def apply_n(self):
-        try:
-            n = int(self.size_entry.get())
-            if n < 2 or n > 200:
-                raise ValueError
-            self.size.set(n)
-            self.generate()
-        except ValueError:
-            messagebox.showerror("Error", "Introduce un número entre 2 y 200")
 
     def generate(self):
         n = self.size.get()
@@ -174,12 +167,27 @@ class SortingVisualizer:
         if self.sorting:
             return
         self.sorting = True
+        self.pause = False
+
+        self.btnGenerar["state"] = "disabled"
+        self.btnOrdenar["state"] = "disabled"
+        self.btnLimpiar["state"] = "disabled"
+        self.btnVerGrafica["state"] = "disabled"
+        self.btnMezclar["state"] = "disabled"
+
         algorithm = self.algorithms[self.current_algorithm.get()]
         self.generator = algorithm(self.array)
         start_time = time.time()
         self.animate(start_time)
 
+    def alternar_pausa(self):
+        if self.sorting:
+            self.pause = not self.pause
+
     def animate(self, start_time):
+        if self.pause:
+            self.root.after(self.speed.get(), lambda: self.animate(start_time))
+            return
         try:
             arr, highlights = next(self.generator)
             self.draw_bars(arr, highlights, self.sorted_indices)
@@ -187,9 +195,15 @@ class SortingVisualizer:
         except StopIteration:
             end_time = time.time()
             elapsed = end_time - start_time
-            self.times[self.current_algorithm.get()] = elapsed
+            n = len(self.array)
+            self.times[self.current_algorithm.get()].append((n, elapsed))
             self.sorted_indices = list(range(len(self.array)))
             self.draw_bars(self.array, [], self.sorted_indices)
+            self.btnOrdenar["state"] = "enabled"
+            self.btnGenerar["state"] = "enabled"
+            self.btnLimpiar["state"] = "enabled"
+            self.btnVerGrafica["state"] = "enabled"
+            self.btnMezclar["state"] = "enabled"
             self.sorting = False
 
     def draw_bars(self, arr, highlights, sorted_indices):
@@ -225,7 +239,8 @@ class SortingVisualizer:
         self.root.update_idletasks()
 
     def show_graph(self):
-        if not self.times:
+        # Verificamos que haya al menos un dato
+        if not any(self.times.values()):
             messagebox.showinfo("Información", "Primero debes ordenar al menos una vez.")
             return
 
@@ -234,21 +249,24 @@ class SortingVisualizer:
         graph_window.geometry("600x400")
 
         fig, ax = plt.subplots(figsize=(6, 4))
-        algorithms = list(self.times.keys())
-        times = list(self.times.values())
 
-        ax.bar(algorithms, times, color="skyblue")
-        ax.set_xlabel("Algoritmo")
+        # Dibujar cada algoritmo como una línea distinta
+        for alg, time_list in self.times.items():
+            if time_list:
+                ejeX = [elemento[0] for elemento in time_list]
+                ejey = [elemento[1] for elemento in time_list]
+                ax.plot(ejeX, ejey, marker="o", linestyle="-", label=alg)
+
+        ax.set_xlabel("Ejecución")
         ax.set_ylabel("Tiempo (s)")
-        ax.set_title("Comparativa de tiempos de ejecución")
+        ax.set_title("Comparativa de tiempos por algoritmo")
+        ax.legend()
 
         canvas = FigureCanvasTkAgg(fig, master=graph_window)
         canvas.draw()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
-# ========================
 # Ejecutar la app
-# ========================
 
 if __name__ == "__main__":
     root = tk.Tk()
