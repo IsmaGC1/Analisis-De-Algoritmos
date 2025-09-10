@@ -149,6 +149,18 @@ class SortingVisualizer:
         self.canvas = tk.Canvas(root, width=900, height=450, bg="white")
         self.canvas.pack(pady=10)
 
+    def medir_tiempo(self, algoritmo, array):
+        arr_copy = array.copy()
+        gen = algoritmo(arr_copy)
+        inicio = time.perf_counter()
+        try:
+            for x in gen:
+                pass
+        except StopIteration:
+            pass
+        final = time.perf_counter()
+        return final - inicio
+
     def generate(self):
         n = self.size.get()
         self.array = random.sample(range(1, n + 1), n)
@@ -176,27 +188,26 @@ class SortingVisualizer:
         self.btnMezclar["state"] = "disabled"
 
         algorithm = self.algorithms[self.current_algorithm.get()]
+        tiempoTotal = self.medir_tiempo(algorithm, self.array)
+        n = len(self.array)
+        self.times[self.current_algorithm.get()].append((n, tiempoTotal))
+
         self.generator = algorithm(self.array)
-        start_time = time.time()
-        self.animate(start_time)
+        self.animate()
 
     def alternar_pausa(self):
         if self.sorting:
             self.pause = not self.pause
 
-    def animate(self, start_time):
+    def animate(self):
         if self.pause:
-            self.root.after(self.speed.get(), lambda: self.animate(start_time))
+            self.root.after(self.speed.get(), lambda: self.animate())
             return
         try:
             arr, highlights = next(self.generator)
             self.draw_bars(arr, highlights, self.sorted_indices)
-            self.root.after(self.speed.get(), lambda: self.animate(start_time))
+            self.root.after(self.speed.get(), lambda: self.animate())
         except StopIteration:
-            end_time = time.time()
-            elapsed = end_time - start_time
-            n = len(self.array)
-            self.times[self.current_algorithm.get()].append((n, elapsed))
             self.sorted_indices = list(range(len(self.array)))
             self.draw_bars(self.array, [], self.sorted_indices)
             self.btnOrdenar["state"] = "enabled"
@@ -258,7 +269,7 @@ class SortingVisualizer:
                 ax.plot(ejeX, ejey, marker="o", linestyle="-", label=alg)
 
         ax.set_xlabel("Ejecución")
-        ax.set_ylabel("Tiempo (s)")
+        ax.set_ylabel("Tiempo (ms)")
         ax.set_title("Comparativa de tiempos por algoritmo")
         ax.legend()
 
