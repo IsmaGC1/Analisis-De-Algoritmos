@@ -113,7 +113,7 @@ class VisualizadorLCA:
             v_m = self.padre[v_m][0]
         return u_m
 
-    # eneradores para Simulación Visual de Consulta
+    # Generadores para Simulación Visual de Consulta
     def obtener_lca_generador(self, u, v):
         if self.nivel[u] > self.nivel[v]: u, v = v, u
         for i in range(self.log_max, -1, -1):
@@ -445,3 +445,4 @@ if __name__ == "__main__":
     aplicacion = VisualizadorLCA(raiz)
 
     raiz.mainloop()
+
