@@ -97,41 +97,56 @@ class VisualizadorLCA:
         for i in range(self.log_max, -1, -1):
             if self.nivel[v] - (1 << i) >= self.nivel[u]:
                 v = self.padre[v][i]
-        if u == v: return u
+        if u == v:
+            return u
         for i in range(self.log_max, -1, -1):
             if self.padre[u][i] != 0 and self.padre[u][i] != self.padre[v][i]:
-                u = self.padre[u][i];
+                u = self.padre[u][i]
                 v = self.padre[v][i]
         return self.padre[u][0]
 
     def obtener_lca_fuerza_bruta(self, u, v):
         u_m, v_m = u, v
-        while self.nivel[u_m] > self.nivel[v_m]: u_m = self.padre[u_m][0]
-        while self.nivel[v_m] > self.nivel[u_m]: v_m = self.padre[v_m][0]
+        while self.nivel[u_m] > self.nivel[v_m]:
+            u_m = self.padre[u_m][0]
+        while self.nivel[v_m] > self.nivel[u_m]:
+            v_m = self.padre[v_m][0]
         while u_m != v_m:
-            u_m = self.padre[u_m][0];
+            u_m = self.padre[u_m][0]
             v_m = self.padre[v_m][0]
         return u_m
 
     # Generadores para Simulación Visual de Consulta
     def obtener_lca_generador(self, u, v):
-        if self.nivel[u] > self.nivel[v]: u, v = v, u
+        if self.nivel[u] > self.nivel[v]:
+            u, v = v, u
         for i in range(self.log_max, -1, -1):
-            if self.nivel[v] - (1 << i) >= self.nivel[u]: v = self.padre[v][i]; yield u, v
-        if u == v: yield u, v; return u
+            if self.nivel[v] - (1 << i) >= self.nivel[u]:
+                v = self.padre[v][i]
+                yield u, v
+        if u == v:
+            yield u, v
+            return u
         for i in range(self.log_max, -1, -1):
             if self.padre[u][i] != 0 and self.padre[u][i] != self.padre[v][i]:
-                u = self.padre[u][i];
-                v = self.padre[v][i];
+                u = self.padre[u][i]
+                v = self.padre[v][i]
                 yield u, v
-        yield u, v;
+        yield u, v
         return self.padre[u][0]
 
     def obtener_lca_fuerza_bruta_generador(self, u, v):
-        while self.nivel[u] > self.nivel[v]: u = self.padre[u][0]; yield u, v
-        while self.nivel[v] > self.nivel[u]: v = self.padre[v][0]; yield u, v
-        while u != v: u = self.padre[u][0]; v = self.padre[v][0]; yield u, v
-        yield u, v;
+        while self.nivel[u] > self.nivel[v]:
+            u = self.padre[u][0]
+            yield u, v
+        while self.nivel[v] > self.nivel[u]:
+            v = self.padre[v][0]
+            yield u, v
+        while u != v:
+            u = self.padre[u][0]
+            v = self.padre[v][0]
+            yield u, v
+        yield u, v
         return u
 
     # Creación de la GUI
@@ -160,12 +175,12 @@ class VisualizadorLCA:
         nodos_frame = tk.Frame(query_frame)
         nodos_frame.pack(pady=5)
         tk.Label(nodos_frame, text="N1:").pack(side=tk.LEFT)
-        self.entrada_nodo1 = tk.Entry(nodos_frame, width=4);
-        self.entrada_nodo1.pack(side=tk.LEFT);
+        self.entrada_nodo1 = tk.Entry(nodos_frame, width=4)
+        self.entrada_nodo1.pack(side=tk.LEFT)
         self.entrada_nodo1.insert(0, "7")
-        tk.Label(nodos_frame, text="N2:").pack(side=tk.LEFT, padx=(10, 0));
-        self.entrada_nodo2 = tk.Entry(nodos_frame, width=4);
-        self.entrada_nodo2.pack(side=tk.LEFT);
+        tk.Label(nodos_frame, text="N2:").pack(side=tk.LEFT, padx=(10, 0))
+        self.entrada_nodo2 = tk.Entry(nodos_frame, width=4)
+        self.entrada_nodo2.pack(side=tk.LEFT)
         self.entrada_nodo2.insert(0, "4")
         self.algoritmo_seleccionado = tk.StringVar(value="divide_y_venceras")
         self.rb_bl = tk.Radiobutton(query_frame, text="Divide y Vencerás", variable=self.algoritmo_seleccionado,
@@ -208,29 +223,20 @@ class VisualizadorLCA:
         try:
             u, v = int(self.entrada_nodo1.get()), int(self.entrada_nodo2.get())
 
-            # --- MODIFICADO ---
-            # Comprueba contra el diccionario de coordenadas (que ahora tiene 12 nodos)
+            # Comprueba contra el diccionario de coordenadas
             if u not in self.coordenadas or v not in self.coordenadas:
-                # Mensaje de error actualizado para usar self.num_nodos
                 messagebox.showerror("Error", f"Nodos inválidos. Por favor ingrese números entre 1 y {self.num_nodos}.")
                 return
-            # --- FIN DE LA MODIFICACIÓN ---
 
             algo_seleccionado = self.algoritmo_seleccionado.get()
             tracemalloc.start()
             start_time = time.perf_counter()
 
             # Determina la complejidad para mostrarla
-            complejidad_temporal = ""
-            complejidad_espacial = ""
             if algo_seleccionado == "divide_y_venceras":
                 lca = self.obtener_lca(u, v)
-                complejidad_temporal = "O(log N)"
-                complejidad_espacial = "O(N log N)"
             else:
                 lca = self.obtener_lca_fuerza_bruta(u, v)
-                complejidad_temporal = "O(N)"
-                complejidad_espacial = "O(N)"
 
             end_time = time.perf_counter()
             memoria_actual, memoria_pico = tracemalloc.get_traced_memory()
@@ -256,7 +262,8 @@ class VisualizadorLCA:
 
     # Lógica de Simulaciones Visuales
     def iniciar_simulacion_dfs(self):
-        if self.simulacion_activa: return
+        if self.simulacion_activa:
+            return
         self.controlar_widgets(False)
         self.reiniciar_estado()
         self.etiqueta_resultado.config(text="Simulando DFS...")
@@ -275,11 +282,13 @@ class VisualizadorLCA:
             self.controlar_widgets(True)
 
     def iniciar_simulacion_tabla_dispersa(self):
-        if self.simulacion_activa: return
+        if self.simulacion_activa:
+            return
         self.controlar_widgets(False)
         self.reiniciar_estado()
         # Se necesita ejecutar el DFS primero para tener los padres directos
-        for _ in self.dfs_generador(1, 0, 1, set()): pass
+        for _ in self.dfs_generador(1, 0, 1, set()):
+            pass
         self.etiqueta_resultado.config(text="Simulando Tabla...")
         self.crear_ventana_tabla()
         generador = self.construir_tabla_dispersa_generador()
@@ -288,8 +297,10 @@ class VisualizadorLCA:
     def paso_simulacion_tabla(self, generador):
         try:
             u, i, p_intermedio, p_final = next(generador)
-            for label in self.tabla_labels.values(): label.config(bg='white')
-            if (u, i) in self.tabla_labels: self.tabla_labels[(u, i)].config(bg='yellow')
+            for label in self.tabla_labels.values():
+                label.config(bg='white')
+            if (u, i) in self.tabla_labels:
+                self.tabla_labels[(u, i)].config(bg='yellow')
 
             if p_final != 0:
                 self.tabla_labels[(u, i)].config(text=str(p_final))
@@ -299,7 +310,8 @@ class VisualizadorLCA:
             else:
                 camino, info = [], f"Calculando padre[u={u}][2^{i}={1 << i}]\nNo hay ancestro."
             self.dibujar_arbol(camino_tabla=camino, info_texto=info)
-            self.ventana_principal.after(300, lambda: self.paso_simulacion_tabla(generador))
+            self.ventana_principal.after(300, lambda:
+            self.paso_simulacion_tabla(generador))
         except StopIteration:
             self.dibujar_arbol()
             self.etiqueta_resultado.config(text="Tabla de saltos completada.")
@@ -358,11 +370,16 @@ class VisualizadorLCA:
                                             width=3)
         for nodo, (x, y) in self.coordenadas.items():
             color_relleno = "lightblue"
-            if nodo in nodos_visitados: color_relleno = "lightgray"
-            if resaltar_iniciales and nodo in resaltar_iniciales: color_relleno = "deepskyblue"
-            if resaltar_actuales and nodo in resaltar_actuales: color_relleno = "orange"
-            if nodo == nodo_actual_dfs: color_relleno = "violet"
-            if nodo == resaltar_lca: color_relleno = "lightgreen"
+            if nodo in nodos_visitados:
+                color_relleno = "lightgray"
+            if resaltar_iniciales and nodo in resaltar_iniciales:
+                color_relleno = "deepskyblue"
+            if resaltar_actuales and nodo in resaltar_actuales:
+                color_relleno = "orange"
+            if nodo == nodo_actual_dfs:
+                color_relleno = "violet"
+            if nodo == resaltar_lca:
+                color_relleno = "lightgreen"
             self.lienzo.create_oval(x - self.radio_nodo, y - self.radio_nodo, x + self.radio_nodo, y + self.radio_nodo,
                                     fill=color_relleno, outline="black", width=2)
             self.lienzo.create_text(x, y, text=str(nodo), font=("Arial", 12, "bold"))
@@ -383,13 +400,16 @@ class VisualizadorLCA:
                 self.tabla_labels[(u, i)] = label
 
     def obtener_camino_hacia_ancestro(self, u_start, u_end):
-        if u_start == 0 or u_end == 0: return []
+        if u_start == 0 or u_end == 0:
+            return []
         camino = [u_start]
         curr = u_start
         for _ in range(self.num_nodos + 1):
-            if curr == u_end: break
+            if curr == u_end:
+                break
             curr = self.padre[curr][0]
-            if curr == 0: return []
+            if curr == 0:
+                return []
             camino.append(curr)
         return camino
 
@@ -412,9 +432,9 @@ class VisualizadorLCA:
             ax1.plot([d['id'] for d in datos_fb], [d['tiempo'] for d in datos_fb], label='Fuerza Bruta (O(N))',
                      color='red', marker='x', linestyle='-')
         ax1.set_title('Complejidad Temporal')
-        ax1.set_xlabel('Número de Búsqueda');
-        ax1.set_ylabel('Tiempo (segundos)');
-        ax1.legend();
+        ax1.set_xlabel('Número de Búsqueda')
+        ax1.set_ylabel('Tiempo (segundos)')
+        ax1.legend()
         ax1.grid(True)
         ax1.ticklabel_format(style='sci', axis='y', scilimits=(0, 0))
 
@@ -425,10 +445,10 @@ class VisualizadorLCA:
         if datos_fb:
             ax2.plot([d['id'] for d in datos_fb], [d['memoria'] for d in datos_fb], label='Fuerza Bruta (O(N))',
                      color='red', marker='x', linestyle='-')
-        ax2.set_title('Complejidad Espacial');
+        ax2.set_title('Complejidad Espacial')
         ax2.set_xlabel('Número de Búsqueda')
-        ax2.set_ylabel('Memoria (bytes)');
-        ax2.legend();
+        ax2.set_ylabel('Memoria (bytes)')
+        ax2.legend()
         ax2.grid(True)
 
         fig.tight_layout(rect=[0, 0.03, 1, 0.95])
@@ -443,6 +463,4 @@ class VisualizadorLCA:
 if __name__ == "__main__":
     raiz = tk.Tk()
     aplicacion = VisualizadorLCA(raiz)
-
     raiz.mainloop()
-
