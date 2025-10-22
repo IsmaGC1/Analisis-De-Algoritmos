@@ -14,7 +14,6 @@ class VisualizadorLCA:
         self.ventana_principal.title("Visualizador de LCA: Comparación de Algoritmos")
         self.ventana_principal.geometry("1100x600")
 
-        # --- MODIFICADO ---
         # Definición del Árbol de Ejemplo (Estructura Estática)
         self.num_nodos = 12
         self.aristas = [(1, 2), (1, 3), (2, 4), (2, 5), (3, 6), (5, 7), (5, 8),
@@ -22,10 +21,8 @@ class VisualizadorLCA:
         self.coordenadas = {
             1: (450, 50), 2: (300, 120), 3: (600, 120), 4: (225, 190),
             5: (375, 190), 6: (600, 190), 7: (325, 260), 8: (425, 260),
-            # Nodos nuevos añadidos según la imagen
             9: (475, 330), 10: (375, 330), 11: (375, 400), 12: (375, 470)
         }
-        # --- FIN DE LA MODIFICACIÓN ---
 
         self.radio_nodo = 20
         self.tabla_labels = {}
@@ -446,4 +443,5 @@ class VisualizadorLCA:
 if __name__ == "__main__":
     raiz = tk.Tk()
     aplicacion = VisualizadorLCA(raiz)
+
     raiz.mainloop()
