@@ -95,6 +95,5 @@ Uso de la aplicación
 3. Pulsa *"Comparar Complejidades"* para visualizar las gráficas de rendimiento.
 
 ---
-*Diseño de la visualización realizado por IsmaGC1
-Implementación del algoritmo por AmiguelV05*
+*Diseño de la visualización realizado por IsmaGC1 - Implementación del algoritmo por AmiguelV05*
 ---
