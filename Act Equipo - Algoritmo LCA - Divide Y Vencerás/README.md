@@ -1,84 +1,99 @@
-# Visualizador y Comparador de Algoritmos LCA
+Visualizador de LCA: Comparación de Algoritmos
 
-Este es un **programa** de escritorio desarrollado en Python con Tkinter que permite visualizar, simular y comparar el rendimiento de dos algoritmos para encontrar el **Ancestro Común más Bajo** (LCA, por sus siglas en inglés: *Lowest Common Ancestor*) en un árbol.
-
-El programa utiliza `Matplotlib` para graficar la complejidad temporal y espacial de las búsquedas y `tracemalloc` para medir el uso de memoria.
-
----
-
-## Características Principales
-
-* **Visualización Interactiva:** Dibuja un árbol estático predefinido y resalta los nodos y caminos durante las simulaciones.
-* **Simulación de Preprocesamiento:**
-    * Muestra paso a paso la ejecución de **DFS** (Búsqueda en Profundidad) para calcular los niveles y padres directos de cada nodo.
-    * Muestra la construcción de la **Tabla de Saltos** utilizada por el algoritmo Binary Lifting, en una ventana emergente.
-* **Simulación de Búsqueda:** Anima el proceso de búsqueda del LCA para ambos algoritmos, mostrando cómo los nodos "escalan" por el árbol hasta encontrarse.
-* **Medición de Rendimiento:** Utiliza `time.perf_counter` y `tracemalloc` para capturar el tiempo de ejecución exacto y el uso de memoria pico de cada consulta.
-* **Análisis de Complejidad:** Genera gráficos de dispersión en tiempo real que comparan el rendimiento (tiempo y espacio) de los algoritmos a medida que el usuario realiza más búsquedas.
+Este proyecto implementa una *aplicación visual interactiva* para comprender el funcionamiento del *algoritmo de Lowest Common Ancestor (LCA)* o *Ancestro Común Más Bajo*, utilizando Python y Tkinter.
+Permite *simular, visualizar y comparar* los métodos de búsqueda de LCA mediante *Binary Lifting (Divide y Vencerás)* y *Fuerza Bruta*, mostrando su complejidad temporal y espacial.
 
 ---
 
-## Algoritmos Comparados
+Características principales
 
-La herramienta implementa y compara dos métodos distintos para encontrar el LCA:
+* *Visualización gráfica* del árbol y sus recorridos.
+* *Simulación paso a paso* del recorrido DFS (para niveles y padres).
+* *Simulación interactiva* de la construcción de la tabla de saltos (Binary Lifting).
+* *Comparación visual* entre los algoritmos de:
 
-1.  **Fuerza Bruta**
-    * **Búsqueda:** $O(N)$
-    * Este método primero iguala el nivel de ambos nodos (subiendo al ancestro del nodo más profundo).
-    * Luego, hace que ambos nodos suban un padre a la vez hasta que coinciden en el mismo nodo.
-    * **Preprocesamiento:** $O(N)$ (solo necesita el DFS inicial).
-    * **Espacio:** $O(N)$.
+  * 🔵 Divide y Vencerás (Binary Lifting)
+  * 🔴 Fuerza Bruta
+* *Gráficos de complejidad* temporal y espacial (con matplotlib).
+* Interfaz creada con *Tkinter*.
 
-2.  **Binary Lifting (Divide y Vencerás)**
-    * *(Etiquetado como "Divide y Vencerás" en la GUI)*.
-    * **Búsqueda:** $O(\log N)$
-    * Este método utiliza una tabla de preprocesamiento que permite a los nodos "saltar" $2^i$ ancestros de una sola vez.
-    * Iguala los niveles usando saltos binarios y luego encuentra el LCA usando una técnica similar.
-    * **Preprocesamiento:** $O(N \log N)$ (para construir la tabla de saltos).
-    * **Espacio:** $O(N \log N)$.
+---
+Tecnologías utilizadas
+
+* *Python 3.9+*
+* *Tkinter* — para la interfaz gráfica.
+* *Matplotlib* — para los gráficos comparativos.
+* *NumPy* — para el manejo de datos numéricos.
+* *Math* — para los cálculos logarítmicos del Binary Lifting.
 
 ---
 
-## Instalación y Ejecución
+⚙ Instalación
 
-Para ejecutar este programa, necesitas Python 3 o superior y la biblioteca `matplotlib`.
+1. *Clona este repositorio*:
 
-1.  Clona o descarga este repositorio.
+   bash
+   git clone https://github.com/tuusuario/Analisis-de-Algoritmos.git
+   cd Analisis-de-Algoritmos
+   cd EquipoIA_DivideVenceras
+   
 
-2.  Instala las dependencias necesarias:
-    ```bash
-    pip install matplotlib
-    ```
+2. *Instala las dependencias*:
 
-3.  Ejecuta el script principal (asegúrate de que el nombre coincida con tu archivo, por ejemplo `main.py` o `visualizador.py`):
-    ```bash
-    python tu_script.py
-    ```
+   bash
+   pip install matplotlib numpy
+   
 
----
+3. *Ejecuta la aplicación*:
 
-## Modo de Uso
-
-La interfaz se divide en tres secciones principales:
-
-### 1. Simular Preprocesamiento
-* Usa los botones **"Simular DFS"** y **"Simular Tabla de Saltos"** para entender visualmente cómo se preparan las estructuras de datos antes de cualquier consulta.
-
-### 2. Medir y Simular Búsqueda
-1.  Introduce los dos nodos (N1 y N2) que deseas consultar.
-2.  Selecciona el algoritmo a utilizar: "Divide y Vencerás" (Binary Lifting) o "Fuerza Bruta".
-3.  Haz clic en **"Calcular, Medir y Simular"**.
-4.  Observa el resultado (LCA, tiempo y memoria) en la parte izquierda.
-5.  Observa la simulación visual de la búsqueda en el lienzo de la derecha.
-
-### 3. Análisis de Complejidad
-* Después de realizar varias búsquedas con ambos algoritmos, haz clic en **"Ver Gráficos de Complejidad"**.
-* Esto abrirá una nueva ventana con dos gráficos que comparan el **Tiempo (segundos)** y la **Memoria (bytes)** de todas las búsquedas realizadas.
-* Usa el botón **"Limpiar Datos"** para reiniciar las métricas.
+   bash
+   python LCA-con-binary-lifting-simulado.py
+   
 
 ---
 
-## dependencies
-* Python 3
-* Tkinter
-* Matplotlib
+Conceptos clave
+
+DFS (Depth-First Search)
+
+Permite recorrer el árbol para determinar los *niveles* de cada nodo y su *padre directo*, lo que es esencial para la posterior construcción de la tabla de saltos.
+
+Binary Lifting (Divide y Vencerás)
+
+Preprocesa una tabla padre[u][i] donde cada celda almacena el *2^i-ésimo ancestro* del nodo u.
+Permite responder consultas LCA en *O(log N)* tiempo.
+
+Fuerza Bruta
+
+Asciende nodo por nodo hasta que ambos convergen en el mismo ancestro.
+Tiene complejidad *O(N)* por consulta.
+
+---
+
+Complejidad de los algoritmos
+
+| Algoritmo         | Preprocesamiento | Consulta | Espacio    |
+| ----------------- | ---------------- | -------- | ---------- |
+| Divide y Vencerás | O(N log N)       | O(log N) | O(N log N) |
+| Fuerza Bruta      | O(N)             | O(N)     | O(N)       |
+
+La aplicación permite visualizar gráficamente esta comparación mediante gráficos generados con matplotlib.
+
+---
+
+Uso de la aplicación
+
+1. Ejecuta el programa (python LCA-con-binary-lifting-simulado.py).
+2. Desde la ventana principal:
+
+   * Pulsa *"Simular DFS"* para recorrer el árbol.
+   * Pulsa *"Simular Tabla de Saltos"* para construir la tabla del Binary Lifting.
+   * Ingresa dos nodos en *N1* y *N2*.
+   * Elige el algoritmo (Divide y Vencerás o Fuerza Bruta).
+   * Pulsa *"Simular Búsqueda de LCA"*.
+   * Observa la animación paso a paso en el lienzo.
+3. Pulsa *"Comparar Complejidades"* para visualizar las gráficas de rendimiento.
+
+---
+*Diseño de la visualización realizado por IsmaGC1 - Implementación del algoritmo por AmiguelV05*
+---
