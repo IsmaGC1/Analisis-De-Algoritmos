@@ -4,7 +4,7 @@ Este proyecto es una aplicación con GUI desarrollada en **Python** que permite 
 
 La herramienta incluye animaciones paso a paso, gráficos de complejidad temporal/espacial y una utilidad extra de compresión de datos utilizando codificación Huffman.
 
-## 📋 Características Principales
+## Características Principales
 
 * **Visualización de Árboles:** Representación gráfica de nodos y aristas con coordenadas predefinidas.
 * **Algoritmos Implementados:**
@@ -15,7 +15,7 @@ La herramienta incluye animaciones paso a paso, gráficos de complejidad tempora
 * **Simulación Paso a Paso:** Animaciones visuales del funcionamiento interno de los algoritmos (DFS, construcción de tablas, recorrido de búsqueda).
 * **Persistencia Comprimida:** Capacidad de guardar y cargar la estructura del árbol en un formato binario propio (`.huff`) comprimido mediante el algoritmo de **Huffman**.
 
-## 🛠 Requisitos y Dependencias
+## Requisitos y Dependencias
 
 Para ejecutar este proyecto necesitas tener instalado **Python 3.x**.
 
@@ -30,7 +30,7 @@ El proyecto requiere **Matplotlib** para la generación de gráficos de compleji
 pip install matplotlib
 ```
 
-## 🚀 Instrucciones de Ejecución
+## Instrucciones de Ejecución
 
 1.  Clona este repositorio o descarga el archivo del código fuente (`Proyecto Final.py`).
 2.  Abre una terminal o línea de comandos en la carpeta del proyecto.
@@ -42,7 +42,7 @@ python "Proyecto Final.py"
 
 4.  Se abrirá la ventana **"Visualizador de LCA - Completo"**.
 
-## 📖 Guía de Uso
+## Guía de Uso
 
 La interfaz está dividida en 4 secciones funcionales:
 
