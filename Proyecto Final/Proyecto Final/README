@@ -1,6 +1,6 @@
 # Visualizador de Algoritmos LCA (Lowest Common Ancestor)
 
-Este proyecto es una aplicación con GUI desarrollada en **Python** que permite visualizar, simular y analizar el rendimiento de diferentes algoritmos para encontrar el **Anceatro Común Más Bajo (LCA)** en una estructura de datos de árbol.
+Este proyecto es una aplicación con GUI desarrollada en **Python** que permite visualizar, simular y analizar el rendimiento de diferentes algoritmos para encontrar el **Ancestro Común Más Bajo (LCA)** en una estructura de datos de árbol.
 
 La herramienta incluye animaciones paso a paso, gráficos de complejidad temporal/espacial y una utilidad extra de compresión de datos utilizando codificación Huffman.
 
